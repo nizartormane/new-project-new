@@ -20,7 +20,7 @@ jobs:
           cache: 'npm'
           
       - name: Install dependencies
-        run: RUN npm install --legacy-peer-deps
+        run:  npm install --legacy-peer-deps
 
         
       - name: Run linting

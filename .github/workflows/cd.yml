@@ -1,31 +1,13 @@
 name: CD
-
 on:
   push:
     branches: [ main ]
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout repository   
-      uses: actions/checkout@v2
-    
-
-        
-    # - name: Set up Node.js
-    #   uses: actions/setup-node@v3
-    #   with:
-    #     node-version: '20'
-    #     cache: 'npm'
-        
-    # - name: Install dependencies
-    #   run: npm ci
-        
-    # - name: Build
-    #   run: npm run build
-        
+      uses: actions/checkout@v2  
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v2
       with:
@@ -35,17 +17,44 @@ jobs:
 
     - name: Login to Amazon ECR
       run: |
-        aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 596658732145.dkr.ecr.us-east-1.amazonaws.com
-        # aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+        aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 
+        ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+        # aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin
+         ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
     - name: Build and push  Docker images
       run: |
         docker build -t react .
-        docker tag react:latest 596658732145.dkr.ecr.us-east-1.amazonaws.com/react:latest
-        docker push 596658732145.dkr.ecr.us-east-1.amazonaws.com/react:latest
+        docker tag react:latest \
+        ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/react:latest
+        docker push \
+        ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/react:latest
 
 
-    
     - name: Logout from Amazon ECR
       run: docker logout ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        # docker build -t react .
+        # docker tag react:latest 596658732145.dkr.ecr.us-east-1.amazonaws.com/react:latest
+        # docker push 596658732145.dkr.ecr.us-east-1.amazonaws.com/react:latest
   
 
